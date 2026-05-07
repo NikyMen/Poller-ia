@@ -24,12 +24,24 @@ function getListUrl() {
 }
 
 function getListMethod() {
-  return process.env.API_LIST_METHOD || 'POST';
+  return String(process.env.API_LIST_METHOD || 'POST').toUpperCase();
 }
 
 function pickArray(json) {
   if (Array.isArray(json)) return json;
-  return json.data || json.items || json.rows || json.records || json.phones || json.telefonos || json.body || [];
+
+  const value = json.data || json.items || json.rows || json.records || json.phones || json.telefonos || json.body;
+  if (Array.isArray(value)) return value;
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : pickArray(parsed);
+    } catch {
+      return [];
+    }
+  }
+
+  return [];
 }
 
 function firstValue(item, keys) {
@@ -40,16 +52,27 @@ function firstValue(item, keys) {
 }
 
 function normalizePhoneItem(item) {
-  const phone = String(firstValue(item, ['phone', 'telefono', 'telefono_cliente', 'celular', 'number', 'numero', 'whatsapp'])).trim();
-  const name = String(firstValue(item, ['name', 'nombre', 'customer', 'cliente'])).trim();
-  const aiValue = firstValue(item, ['aiEnabled', 'iaActiva', 'ia_activa', 'botEnabled', 'botActivo', 'bot_activo', 'enabled', 'active', 'activo']);
+  const source = item && typeof item.json === 'object' ? item.json : item;
+  const phone = String(firstValue(source, ['phone', 'telefono', 'telefono_cliente', 'celular', 'number', 'numero', 'whatsapp'])).trim();
+  const name = String(firstValue(source, ['name', 'nombre', 'customer', 'cliente'])).trim();
+  const aiValue = firstValue(source, ['aiEnabled', 'iaActiva', 'ia_activa', 'botEnabled', 'botActivo', 'bot_activo', 'enabled', 'active', 'activo']);
 
   return {
     phone,
     name,
-    aiEnabled: aiValue === '' ? true : Boolean(aiValue),
-    raw: item
+    aiEnabled: parseBoolean(aiValue),
+    raw: source
   };
+}
+
+function parseBoolean(value) {
+  if (value === '') return true;
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'number') return value !== 0;
+
+  const normalized = String(value).trim().toLowerCase();
+  if (['false', '0', 'no', 'off', 'inactivo', 'pausado', 'desactivado'].includes(normalized)) return false;
+  return true;
 }
 
 module.exports = {
