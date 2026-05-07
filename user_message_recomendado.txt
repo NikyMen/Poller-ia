@@ -1,0 +1,24 @@
+conversation:
+{{ $node["Get row(s)30"].data.message_buffer }}
+
+promos_del_dia:
+{{ $json.catalogo_resumen }}
+
+Analiza la conversacion completa y devolve solo el JSON definido en el system message.
+
+Regla extra obligatoria para esta ejecucion:
+- Completa siempre `send_sucursal` con uno de estos valores exactos:
+  - true
+  - null
+
+Interpretacion obligatoria de sucursal:
+- Si el cliente quiere retirar, pregunta por sucursal, direccion o ubicacion, usa `send_sucursal: true`.
+- Si el cliente menciona Junin, Junin 2198, 2198, Sarmiento, La Pampa o Sarmiento y La Pampa, usa `send_sucursal: true`.
+- Si el cliente pide retiro por Cazadores, Independencia, Gutemberg, Libertad, Maipu o cualquier otra sucursal no habilitada, usa `send_sucursal: true`.
+- Si no esta hablando de sucursal, ubicacion ni retiro, usa `send_sucursal: null`.
+
+Reglas de respuesta para sucursal:
+- Nunca confirmes ni agendes retiros.
+- Nunca uses en `reply.message` frases como "Listo", "agendado", "confirmado" o "te lo dejo asentado".
+- Si el cliente pide una sucursal no habilitada, `reply.message` debe ser exactamente:
+"La sucursal que desea va a estar habilitada proximamente, pero por ahora no esta disponible para retiros. Podes retirar tu pedido en Junin 2198 o Sarmiento y La Pampa, que estan activos en Corrientes Capital. Te gustaria que tomemos tu pedido para alguna de estas sucursales?"
