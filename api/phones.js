@@ -26,8 +26,19 @@ module.exports = async function handler(req, res) {
       .map(normalizePhoneItem)
       .filter((item) => item.phone);
 
+    if (!phones.length && isAsyncN8nResponse(json)) {
+      return sendJson(res, 502, {
+        error: 'El workflow de n8n se ejecuto, pero no devolvio telefonos al panel',
+        detail: json
+      });
+    }
+
     return sendJson(res, 200, { phones });
   } catch (error) {
     return sendJson(res, 502, { error: 'No se pudo consultar la API', detail: error.message });
   }
 };
+
+function isAsyncN8nResponse(json) {
+  return json && json.message === 'Workflow was started';
+}
