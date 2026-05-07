@@ -235,12 +235,18 @@ h1 {
   color: var(--warning);
 }
 
-.phone-row .toggle-btn.off-action {
+.phone-row .deactivate-btn {
   background: var(--danger);
 }
 
-.phone-row .toggle-btn.off-action:hover {
+.phone-row .deactivate-btn:hover {
   background: #961f1f;
+}
+
+.phone-row .deactivate-btn:disabled {
+  background: #d7d1c8;
+  color: var(--muted);
+  cursor: default;
 }
 
 @media (max-width: 680px) {

@@ -72,8 +72,7 @@ function renderPhones() {
     row.className = 'phone-row';
 
     const statusClass = item.aiEnabled ? 'on' : 'off';
-    const actionText = item.aiEnabled ? 'Desactivar IA' : 'Activar IA';
-    const nextValue = !item.aiEnabled;
+    const actionText = item.aiEnabled ? 'Desactivar IA' : 'IA desactivada';
 
     row.innerHTML = `
       <div class="phone-main">
@@ -82,13 +81,15 @@ function renderPhones() {
         <dl class="phone-details"></dl>
       </div>
       <span class="badge ${statusClass}">${item.aiEnabled ? 'IA activa' : 'IA pausada'}</span>
-      <button class="toggle-btn ${item.aiEnabled ? 'off-action' : ''}" type="button">${actionText}</button>
+      <button class="deactivate-btn" type="button">${actionText}</button>
     `;
 
     row.querySelector('.phone-number').textContent = item.phone;
     row.querySelector('.phone-name').textContent = item.name || 'Sin nombre';
     renderDetails(row.querySelector('.phone-details'), item);
-    row.querySelector('.toggle-btn').addEventListener('click', () => setAi(item.phone, nextValue));
+    const button = row.querySelector('.deactivate-btn');
+    button.disabled = !item.aiEnabled;
+    button.addEventListener('click', () => setAi(item.phone, false));
     phonesList.appendChild(row);
   }
 }
