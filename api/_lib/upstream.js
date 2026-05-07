@@ -79,12 +79,13 @@ function normalizePhoneItem(item) {
   const name = String(firstValue(source, ['name', 'nombre', 'customer', 'cliente'])).trim();
   const aiValue = firstValue(source, ['aiEnabled', 'iaActiva', 'ia_activa', 'botEnabled', 'botActivo', 'bot_activo', 'enabled', 'active', 'activo']);
   const disabledValue = firstValue(source, ['bot_desactivado', 'botDesactivado', 'ia_desactivada', 'iaDesactivada', 'disabled', 'desactivado']);
+  const raw = source && typeof source.raw === 'object' ? source.raw : source;
 
   return {
     phone,
     name,
     aiEnabled: disabledValue === '' ? parseBoolean(aiValue) : !parseBoolean(disabledValue),
-    raw: source
+    raw
   };
 }
 

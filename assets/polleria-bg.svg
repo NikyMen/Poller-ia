@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Polleria Entre Rios">
+  <defs>
+    <linearGradient id="wood" x1="0" x2="1">
+      <stop offset="0" stop-color="#1d0d06"/>
+      <stop offset="0.5" stop-color="#4a2818"/>
+      <stop offset="1" stop-color="#1a0b05"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#wood)"/>
+  <g opacity="0.24" stroke="#f7e6d5" stroke-width="3" fill="none">
+    <path d="M0 80h1600M0 255h1600M0 430h1600M0 610h1600M0 790h1600"/>
+    <path d="M40 30c40 38 82 38 126 0M260 850c62-42 128-42 198 0M1180 50c66 45 136 45 210 0"/>
+    <circle cx="1270" cy="830" r="42"/>
+    <circle cx="1360" cy="70" r="38"/>
+  </g>
+  <g opacity="0.85">
+    <ellipse cx="150" cy="160" rx="44" ry="88" fill="#79b82f" transform="rotate(-35 150 160)"/>
+    <ellipse cx="1430" cy="700" rx="54" ry="120" fill="#88c737" transform="rotate(-24 1430 700)"/>
+    <circle cx="1515" cy="275" r="88" fill="#ff5a1f"/>
+    <circle cx="1515" cy="275" r="66" fill="#ec3219"/>
+  </g>
+  <g filter="url(#shadow)">
+    <path d="M475 520c24-102 154-160 260-98 86-74 232-24 248 84 106 16 136 140 44 194H526c-86-22-102-112-51-180z" fill="#fff"/>
+    <text x="640" y="430" fill="#ffd21a" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="700" letter-spacing="9">POLLERIA</text>
+    <text x="520" y="615" fill="#ec1c24" font-family="Georgia, serif" font-size="138" font-weight="800" font-style="italic">Entre Rios</text>
+  </g>
+</svg>

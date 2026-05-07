@@ -13,17 +13,21 @@ module.exports = async function handler(req, res) {
   try {
     const body = await readJson(req);
     const phone = String(body.phone || body.telefono || '').trim();
-    if (!phone) return sendJson(res, 400, { error: 'Falta telefono' });
+    const payload = {
+      bot_desactivado: true,
+      salesBotEnabled: false
+    };
+
+    if (phone) {
+      payload.phone = phone;
+      payload.telefono = phone;
+      payload.lead_id = body.lead_id;
+    }
 
     const response = await fetch(url, {
       method: 'POST',
       headers: getApiHeaders(),
-      body: JSON.stringify({
-        phone,
-        telefono: phone,
-        bot_desactivado: true,
-        salesBotEnabled: false
-      })
+      body: JSON.stringify(payload)
     });
 
     const text = await response.text();

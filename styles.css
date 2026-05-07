@@ -1,14 +1,18 @@
 :root {
   color-scheme: light;
-  --bg: #f6f4ef;
-  --panel: #ffffff;
-  --text: #1f2428;
-  --muted: #687078;
-  --line: #ded8cc;
-  --accent: #0f7a5f;
-  --accent-dark: #095f49;
-  --danger: #bd2d2d;
+  --bg: #120b08;
+  --panel: rgba(255, 252, 246, 0.94);
+  --panel-strong: #ffffff;
+  --text: #1c1713;
+  --muted: #6d6259;
+  --line: rgba(86, 57, 38, 0.22);
+  --accent: #13865f;
+  --accent-dark: #075c41;
+  --danger: #c72f2f;
+  --danger-dark: #981d1d;
   --warning: #a15c05;
+  --lime: #d7ff00;
+  --brand-ink: #0b2240;
 }
 
 * {
@@ -21,6 +25,20 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+body.auth-page {
+  background:
+    radial-gradient(circle at 50% 15%, rgba(215, 255, 0, 0.25), transparent 38%),
+    linear-gradient(135deg, #d7ff00 0%, #c6f000 48%, #101f28 48%, #081219 100%);
+}
+
+body.panel-page {
+  background:
+    linear-gradient(rgba(22, 12, 7, 0.46), rgba(22, 12, 7, 0.72)),
+    url('/assets/polleria-bg.jpg') center / cover fixed,
+    url('/assets/polleria-bg.svg') center / cover fixed,
+    #24120b;
 }
 
 button,
@@ -62,7 +80,7 @@ button.danger {
 }
 
 button.danger:hover {
-  background: #961f1f;
+  background: var(--danger-dark);
 }
 
 input {
@@ -84,9 +102,16 @@ label {
 }
 
 .shell {
-  width: min(960px, calc(100% - 28px));
+  width: min(1140px, calc(100% - 28px));
   margin: 0 auto;
   padding: 32px 0;
+}
+
+.auth-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px 0;
 }
 
 .login-panel,
@@ -94,24 +119,38 @@ label {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 8px;
-  box-shadow: 0 18px 45px rgba(31, 36, 40, 0.08);
+  box-shadow: 0 24px 70px rgba(8, 5, 3, 0.32);
+  backdrop-filter: blur(10px);
 }
 
 .login-panel {
   width: min(420px, 100%);
-  margin: 10vh auto 0;
   padding: 28px;
   display: grid;
   gap: 24px;
 }
 
+.login-brand {
+  display: grid;
+  gap: 14px;
+}
+
+.brand-logo {
+  width: min(260px, 100%);
+  aspect-ratio: 3 / 1;
+  border-radius: 6px;
+  background:
+    url('/assets/consultoria-digital-logo.jpg') center / contain no-repeat,
+    url('/assets/consultoria-digital-logo.svg') center / contain no-repeat,
+    var(--lime);
+}
+
 .dashboard {
-  padding: 24px;
+  padding: 28px;
 }
 
 .topbar,
-.toolbar,
-.manual-form {
+.toolbar {
   display: flex;
   gap: 12px;
   align-items: end;
@@ -120,27 +159,25 @@ label {
 .topbar {
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
-.manual-form {
-  padding: 16px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #fbfaf7;
+.topbar-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
-.manual-form label,
 .toolbar input {
   flex: 1;
 }
 
-.manual-form button {
-  white-space: nowrap;
-}
-
 .toolbar {
   margin: 16px 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
 }
 
 .form {
@@ -184,13 +221,13 @@ h1 {
 
 .phone-row {
   display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 16px;
   align-items: center;
-  padding: 14px;
+  padding: 16px 18px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.88);
 }
 
 .phone-main {
@@ -198,10 +235,38 @@ h1 {
 }
 
 .phone-number {
-  margin: 0 0 4px;
-  font-size: 18px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0 0 6px;
+  font-size: 20px;
   font-weight: 800;
   overflow-wrap: anywhere;
+}
+
+.phone-lead {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.field-icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: var(--accent-dark);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.phone-lead .field-icon {
+  stroke: var(--warning);
 }
 
 .phone-name {
@@ -217,6 +282,21 @@ h1 {
   margin: 10px 0 0;
   color: var(--muted);
   font-size: 13px;
+}
+
+.phone-status {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.phone-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.phone-actions button {
+  white-space: nowrap;
 }
 
 .phone-details dt {
@@ -252,13 +332,57 @@ h1 {
 }
 
 .phone-row .deactivate-btn:hover {
-  background: #961f1f;
+  background: var(--danger-dark);
 }
 
 .phone-row .deactivate-btn:disabled {
   background: #d7d1c8;
   color: var(--muted);
   cursor: default;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(12, 6, 4, 0.66);
+}
+
+.modal-panel {
+  width: min(420px, 100%);
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-strong);
+  box-shadow: 0 24px 70px rgba(8, 5, 3, 0.38);
+}
+
+.modal-panel h2 {
+  margin: 0 0 10px;
+  font-size: 24px;
+}
+
+.modal-panel p {
+  margin: 0 0 18px;
+  color: var(--muted);
+}
+
+#shutdownCountdown {
+  color: var(--danger);
+  font-size: 28px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
 }
 
 @media (max-width: 680px) {
@@ -268,8 +392,12 @@ h1 {
   }
 
   .topbar,
-  .toolbar,
-  .manual-form {
+  .toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .topbar-actions {
     align-items: stretch;
     flex-direction: column;
   }
@@ -285,5 +413,14 @@ h1 {
 
   .badge {
     width: fit-content;
+  }
+
+  .phone-status,
+  .phone-actions {
+    justify-content: flex-start;
+  }
+
+  .phone-actions {
+    flex-direction: column;
   }
 }

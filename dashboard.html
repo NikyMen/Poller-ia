@@ -6,25 +6,19 @@
     <title>Panel IA - Polleria Entre Rios</title>
     <link rel="stylesheet" href="/styles.css">
   </head>
-  <body>
+  <body class="panel-page">
     <main class="shell">
       <section class="dashboard">
         <header class="topbar">
           <div>
             <p class="eyebrow">Polleria Entre Rios</p>
-            <h1>Telefonos con IA</h1>
+            <h1>Control de bots</h1>
           </div>
-          <button id="logoutBtn" class="secondary" type="button">Salir</button>
+          <div class="topbar-actions">
+            <button id="shutdownSalesBotBtn" class="danger" type="button">Apagar bot de ventas</button>
+            <button id="logoutBtn" class="secondary" type="button">Salir</button>
+          </div>
         </header>
-
-        <form id="manualForm" class="manual-form">
-          <label>
-            Telefono para intervenir
-            <input id="manualPhone" placeholder="Ej: 3430000000" inputmode="tel" required>
-          </label>
-          <button type="submit">Desactivar IA</button>
-          <button id="shutdownSalesBotBtn" class="danger" type="button">Apagar bot de ventas</button>
-        </form>
 
         <div class="toolbar">
           <input id="searchInput" placeholder="Buscar telefono o cliente">
@@ -35,6 +29,17 @@
         <div id="phonesList" class="list"></div>
       </section>
     </main>
+
+    <div id="shutdownModal" class="modal" hidden>
+      <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="shutdownTitle">
+        <h2 id="shutdownTitle">Apagando bot de ventas</h2>
+        <p id="shutdownMessage">El boton final se habilitara en <strong id="shutdownCountdown">5</strong> segundos.</p>
+        <div class="modal-actions">
+          <button id="cancelShutdownBtn" class="secondary" type="button">Cancelar</button>
+          <button id="confirmShutdownBtn" class="danger" type="button" disabled>Confirmar apagado</button>
+        </div>
+      </div>
+    </div>
 
     <script src="/app.js"></script>
   </body>
