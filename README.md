@@ -46,3 +46,9 @@ Campos soportados por item:
 npm install
 npm run dev
 ```
+
+`npm run dev` levanta `http://localhost:3000` y abre el navegador. Para no abrirlo automaticamente:
+
+```bash
+$env:NO_OPEN=1; npm run dev
+```

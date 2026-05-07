@@ -4,8 +4,9 @@
   "private": true,
   "description": "Panel simple para pausar la IA por telefono.",
   "scripts": {
-    "dev": "vercel dev",
-    "start": "vercel dev"
+    "dev": "node local-dev-server.js",
+    "start": "node local-dev-server.js",
+    "vercel:dev": "vercel dev"
   },
   "engines": {
     "node": ">=18"

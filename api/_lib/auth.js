@@ -34,11 +34,15 @@ function createSessionCookie(username) {
     exp: Date.now() + SESSION_TTL_MS
   }));
   const token = `${payload}.${sign(payload)}`;
-  return `${COOKIE_NAME}=${encodeURIComponent(token)}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${SESSION_TTL_MS / 1000}`;
+  return `${COOKIE_NAME}=${encodeURIComponent(token)}; Path=/; HttpOnly${secureCookieFlag()}; SameSite=Strict; Max-Age=${SESSION_TTL_MS / 1000}`;
 }
 
 function clearSessionCookie() {
-  return `${COOKIE_NAME}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`;
+  return `${COOKIE_NAME}=; Path=/; HttpOnly${secureCookieFlag()}; SameSite=Strict; Max-Age=0`;
+}
+
+function secureCookieFlag() {
+  return process.env.NODE_ENV === 'production' ? '; Secure' : '';
 }
 
 function getSession(req) {
