@@ -16,6 +16,7 @@ const apiRoutes = {
   '/api/session': './api/session.js',
   '/api/phones': './api/phones.js',
   '/api/clientes-bot': './api/clientes-bot.js',
+  '/api/apagar-bot': './api/apagar-bot.js',
   '/api/toggle-ai': './api/toggle-ai.js'
 };
 

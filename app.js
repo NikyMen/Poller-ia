@@ -6,6 +6,7 @@ const logoutBtn = document.querySelector('#logoutBtn');
 const refreshBtn = document.querySelector('#refreshBtn');
 const manualForm = document.querySelector('#manualForm');
 const manualPhone = document.querySelector('#manualPhone');
+const shutdownSalesBotBtn = document.querySelector('#shutdownSalesBotBtn');
 const searchInput = document.querySelector('#searchInput');
 const statusMessage = document.querySelector('#statusMessage');
 const phonesList = document.querySelector('#phonesList');
@@ -27,6 +28,7 @@ logoutBtn.addEventListener('click', async () => {
 });
 
 refreshBtn.addEventListener('click', loadPhones);
+shutdownSalesBotBtn.addEventListener('click', shutdownSalesBot);
 searchInput.addEventListener('input', renderPhones);
 
 manualForm.addEventListener('submit', async (event) => {
@@ -150,6 +152,39 @@ async function setAi(target, aiEnabled) {
     setStatus(`IA ${aiEnabled ? 'activada' : 'desactivada'} para ${phone}.`);
   } catch (error) {
     setStatus(error.message, true);
+  }
+}
+
+async function shutdownSalesBot() {
+  const phone = manualPhone.value.trim();
+  if (!phone) {
+    setStatus('Ingresa un telefono para apagar el bot de ventas.', true);
+    manualPhone.focus();
+    return;
+  }
+
+  setStatus(`Apagando bot de ventas para ${phone}...`);
+  shutdownSalesBotBtn.disabled = true;
+
+  try {
+    await api('/api/apagar-bot', {
+      method: 'POST',
+      body: JSON.stringify({
+        phone,
+        telefono: phone,
+        bot_desactivado: true,
+        salesBotEnabled: false
+      })
+    });
+
+    const existing = state.phones.find((item) => item.phone === phone);
+    if (existing) existing.aiEnabled = false;
+    renderPhones();
+    setStatus(`Bot de ventas apagado para ${phone}.`);
+  } catch (error) {
+    setStatus(error.message, true);
+  } finally {
+    shutdownSalesBotBtn.disabled = false;
   }
 }
 

@@ -13,6 +13,7 @@ SESSION_SECRET=un-secreto-largo-aleatorio
 API_LIST_URL=https://tu-api.com/telefonos
 API_LIST_METHOD=POST
 API_TOGGLE_URL=https://tu-api.com/telefonos/ia
+API_APAGAR_BOT_URL=https://n8n.srv1224751.hstgr.cloud/webhook/apagar_bot
 API_TOKEN=token-opcional-si-tu-api-lo-pide
 CLIENTES_BOT_API_KEY=token-opcional-para-api-clientes-bot
 ```
@@ -58,6 +59,17 @@ con un body `{ "clientes": [...] }`. Si configuraste `CLIENTES_BOT_API_KEY`, env
 ```
 
 Si `API_TOGGLE_URL` devuelve 404, revisar que el workflow de n8n este activo y que la variable use la URL de produccion `/webhook/...`, no `/webhook-test/...`.
+
+El boton `Apagar bot de ventas` llama a `API_APAGAR_BOT_URL` con:
+
+```json
+{
+  "phone": "3430000000",
+  "telefono": "3430000000",
+  "bot_desactivado": true,
+  "salesBotEnabled": false
+}
+```
 
 ## Desarrollo local
 
