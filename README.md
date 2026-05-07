@@ -14,6 +14,7 @@ API_LIST_URL=https://tu-api.com/telefonos
 API_LIST_METHOD=POST
 API_TOGGLE_URL=https://tu-api.com/telefonos/ia
 API_TOKEN=token-opcional-si-tu-api-lo-pide
+CLIENTES_BOT_API_KEY=token-opcional-para-api-clientes-bot
 ```
 
 `API_LIST_URL` puede ser el webhook de n8n:
@@ -23,13 +24,22 @@ API_LIST_URL=https://n8n.srv1224751.hstgr.cloud/webhook/db-polleria
 API_LIST_METHOD=POST
 ```
 
-Ese flujo debe responder JSON como array o dentro de `data`, `items`, `rows`, `records`, `phones` o `telefonos`.
+Ese flujo debe responder JSON como array o dentro de `data`, `items`, `rows`, `records`, `phones`, `telefonos` o `clientes`.
 
 Campos soportados por item:
 
 - Telefono: `phone`, `telefono`, `number`, `numero`, `whatsapp`
 - Nombre: `name`, `nombre`, `customer`, `cliente`
 - IA activa: `aiEnabled`, `iaActiva`, `botEnabled`, `botActivo`, `enabled`, `active`, `activo`
+- IA pausada/desactivada: `bot_desactivado`, `botDesactivado`, `ia_desactivada`, `iaDesactivada`, `disabled`, `desactivado`
+
+Si el flujo de n8n necesita llamar al panel, puede usar:
+
+```text
+POST /api/clientes-bot
+```
+
+con un body `{ "clientes": [...] }`. Si configuraste `CLIENTES_BOT_API_KEY`, enviar el mismo valor en el header `x-api-key`.
 
 `API_TOGGLE_URL` recibe:
 

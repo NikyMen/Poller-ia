@@ -15,6 +15,7 @@ const apiRoutes = {
   '/api/logout': './api/logout.js',
   '/api/session': './api/session.js',
   '/api/phones': './api/phones.js',
+  '/api/clientes-bot': './api/clientes-bot.js',
   '/api/toggle-ai': './api/toggle-ai.js'
 };
 
