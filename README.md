@@ -28,6 +28,8 @@ Ese flujo debe responder JSON como array o dentro de `data`, `items`, `rows`, `r
 
 El webhook de n8n tiene que devolver los telefonos en la misma respuesta HTTP. Si responde solo `{ "message": "Workflow was started" }`, el panel no puede mostrar datos porque el flujo quedo asincronico.
 
+Como compatibilidad, `POST /api/clientes-bot` guarda temporalmente el ultimo listado recibido y `/api/phones` lo usa si n8n responde asincronico.
+
 Campos soportados por item:
 
 - Telefono: `phone`, `telefono`, `number`, `numero`, `whatsapp`

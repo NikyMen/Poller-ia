@@ -1,4 +1,5 @@
 const { sendJson } = require('./_lib/auth');
+const { savePhones } = require('./_lib/clientes-cache');
 const { normalizePhoneItem, pickArray, readJson } = require('./_lib/upstream');
 
 module.exports = async function handler(req, res) {
@@ -15,6 +16,7 @@ module.exports = async function handler(req, res) {
     const phones = pickArray(body)
       .map(normalizePhoneItem)
       .filter((item) => item.phone);
+    savePhones(phones);
 
     return sendJson(res, 200, {
       ok: true,

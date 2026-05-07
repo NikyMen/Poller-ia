@@ -1,4 +1,5 @@
 const { requireSession, sendJson } = require('./_lib/auth');
+const { waitForCachedPhones } = require('./_lib/clientes-cache');
 const { getApiHeaders, getListMethod, getListUrl, normalizePhoneItem, pickArray } = require('./_lib/upstream');
 
 module.exports = async function handler(req, res) {
@@ -9,6 +10,7 @@ module.exports = async function handler(req, res) {
   if (!requireSession(req, res)) return;
 
   const method = getListMethod();
+  const requestedAt = Date.now();
 
   try {
     const response = await fetch(getListUrl(), {
@@ -27,6 +29,18 @@ module.exports = async function handler(req, res) {
       .filter((item) => item.phone);
 
     if (!phones.length && isAsyncN8nResponse(json)) {
+      const cached = await waitForCachedPhones({
+        minUpdatedAt: requestedAt - 5 * 60 * 1000
+      });
+
+      if (cached) {
+        return sendJson(res, 200, {
+          phones: cached.phones,
+          cached: true,
+          updatedAt: cached.updatedAt
+        });
+      }
+
       return sendJson(res, 502, {
         error: 'El workflow de n8n se ejecuto, pero no devolvio telefonos al panel',
         detail: json
