@@ -1,12 +1,7 @@
 const state = {
-  phones: [],
-  filtered: []
+  phones: []
 };
 
-const loginView = document.querySelector('#loginView');
-const appView = document.querySelector('#appView');
-const loginForm = document.querySelector('#loginForm');
-const loginError = document.querySelector('#loginError');
 const logoutBtn = document.querySelector('#logoutBtn');
 const refreshBtn = document.querySelector('#refreshBtn');
 const manualForm = document.querySelector('#manualForm');
@@ -19,40 +14,16 @@ init();
 
 async function init() {
   const session = await api('/api/session');
-  showView(session.authenticated);
-  if (session.authenticated) loadPhones();
-}
-
-loginForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  loginError.textContent = '';
-
-  const button = loginForm.querySelector('button');
-  button.disabled = true;
-
-  try {
-    await api('/api/login', {
-      method: 'POST',
-      body: JSON.stringify({
-        username: loginForm.username.value.trim(),
-        password: loginForm.password.value
-      })
-    });
-    loginForm.reset();
-    showView(true);
-    await loadPhones();
-  } catch (error) {
-    loginError.textContent = error.message;
-  } finally {
-    button.disabled = false;
+  if (!session.authenticated) {
+    window.location.replace('/');
+    return;
   }
-});
+  loadPhones();
+}
 
 logoutBtn.addEventListener('click', async () => {
   await api('/api/logout', { method: 'POST' });
-  state.phones = [];
-  renderPhones();
-  showView(false);
+  window.location.replace('/');
 });
 
 refreshBtn.addEventListener('click', loadPhones);
@@ -65,11 +36,6 @@ manualForm.addEventListener('submit', async (event) => {
   await setAi(phone, false);
   manualPhone.value = '';
 });
-
-function showView(isAuthenticated) {
-  loginView.hidden = isAuthenticated;
-  appView.hidden = !isAuthenticated;
-}
 
 async function loadPhones() {
   setStatus('Cargando telefonos...');
@@ -90,7 +56,8 @@ async function loadPhones() {
 function renderPhones() {
   const query = searchInput.value.trim().toLowerCase();
   const phones = state.phones.filter((item) => {
-    return !query || item.phone.toLowerCase().includes(query) || (item.name || '').toLowerCase().includes(query);
+    const rawText = JSON.stringify(item.raw || {}).toLowerCase();
+    return !query || item.phone.toLowerCase().includes(query) || (item.name || '').toLowerCase().includes(query) || rawText.includes(query);
   });
 
   phonesList.innerHTML = '';
@@ -112,6 +79,7 @@ function renderPhones() {
       <div class="phone-main">
         <p class="phone-number"></p>
         <p class="phone-name"></p>
+        <dl class="phone-details"></dl>
       </div>
       <span class="badge ${statusClass}">${item.aiEnabled ? 'IA activa' : 'IA pausada'}</span>
       <button class="toggle-btn ${item.aiEnabled ? 'off-action' : ''}" type="button">${actionText}</button>
@@ -119,9 +87,39 @@ function renderPhones() {
 
     row.querySelector('.phone-number').textContent = item.phone;
     row.querySelector('.phone-name').textContent = item.name || 'Sin nombre';
+    renderDetails(row.querySelector('.phone-details'), item);
     row.querySelector('.toggle-btn').addEventListener('click', () => setAi(item.phone, nextValue));
     phonesList.appendChild(row);
   }
+}
+
+function renderDetails(container, item) {
+  const skipKeys = new Set([
+    'phone', 'telefono', 'number', 'numero', 'whatsapp',
+    'name', 'nombre', 'customer', 'cliente',
+    'aiEnabled', 'iaActiva', 'botEnabled', 'botActivo',
+    'enabled', 'active', 'activo'
+  ]);
+
+  const entries = Object.entries(item.raw || {})
+    .filter(([key, value]) => !skipKeys.has(key) && value !== null && value !== undefined && value !== '')
+    .slice(0, 8);
+
+  container.innerHTML = '';
+  for (const [key, value] of entries) {
+    const term = document.createElement('dt');
+    const description = document.createElement('dd');
+    term.textContent = formatLabel(key);
+    description.textContent = typeof value === 'object' ? JSON.stringify(value) : String(value);
+    container.append(term, description);
+  }
+}
+
+function formatLabel(key) {
+  return key
+    .replace(/[_-]+/g, ' ')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .trim();
 }
 
 async function setAi(phone, aiEnabled) {

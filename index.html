@@ -8,7 +8,7 @@
   </head>
   <body>
     <main class="shell">
-      <section id="loginView" class="login-panel" hidden>
+      <section class="login-panel">
         <div>
           <p class="eyebrow">Polleria Entre Rios</p>
           <h1>Panel de IA</h1>
@@ -27,34 +27,8 @@
           <p id="loginError" class="error" role="alert"></p>
         </form>
       </section>
-
-      <section id="appView" class="dashboard" hidden>
-        <header class="topbar">
-          <div>
-            <p class="eyebrow">Polleria Entre Rios</p>
-            <h1>Telefonos con IA</h1>
-          </div>
-          <button id="logoutBtn" class="secondary" type="button">Salir</button>
-        </header>
-
-        <form id="manualForm" class="manual-form">
-          <label>
-            Telefono para intervenir
-            <input id="manualPhone" placeholder="Ej: 3430000000" inputmode="tel" required>
-          </label>
-          <button type="submit">Desactivar IA</button>
-        </form>
-
-        <div class="toolbar">
-          <input id="searchInput" placeholder="Buscar telefono o cliente">
-          <button id="refreshBtn" class="secondary" type="button">Actualizar</button>
-        </div>
-
-        <div id="statusMessage" class="status"></div>
-        <div id="phonesList" class="list"></div>
-      </section>
     </main>
 
-    <script src="/app.js"></script>
+    <script src="/login.js"></script>
   </body>
 </html>

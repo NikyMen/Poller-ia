@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Panel IA - Polleria Entre Rios</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="dashboard">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Polleria Entre Rios</p>
+            <h1>Telefonos con IA</h1>
+          </div>
+          <button id="logoutBtn" class="secondary" type="button">Salir</button>
+        </header>
+
+        <form id="manualForm" class="manual-form">
+          <label>
+            Telefono para intervenir
+            <input id="manualPhone" placeholder="Ej: 3430000000" inputmode="tel" required>
+          </label>
+          <button type="submit">Desactivar IA</button>
+        </form>
+
+        <div class="toolbar">
+          <input id="searchInput" placeholder="Buscar telefono o cliente">
+          <button id="refreshBtn" class="secondary" type="button">Actualizar</button>
+        </div>
+
+        <div id="statusMessage" class="status"></div>
+        <div id="phonesList" class="list"></div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

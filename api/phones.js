@@ -1,5 +1,5 @@
 const { requireSession, sendJson } = require('./_lib/auth');
-const { getApiHeaders, normalizePhoneItem, pickArray } = require('./_lib/upstream');
+const { getApiHeaders, getListMethod, getListUrl, normalizePhoneItem, pickArray } = require('./_lib/upstream');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -8,15 +8,13 @@ module.exports = async function handler(req, res) {
 
   if (!requireSession(req, res)) return;
 
-  const url = process.env.API_LIST_URL;
-  if (!url) {
-    return sendJson(res, 500, { error: 'Falta API_LIST_URL' });
-  }
+  const method = getListMethod();
 
   try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: getApiHeaders()
+    const response = await fetch(getListUrl(), {
+      method,
+      headers: getApiHeaders(),
+      body: method === 'GET' ? undefined : JSON.stringify({ source: 'poller-ia-panel' })
     });
 
     const json = await response.json();

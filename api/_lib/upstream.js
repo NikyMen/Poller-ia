@@ -19,9 +19,17 @@ function getApiHeaders() {
   return headers;
 }
 
+function getListUrl() {
+  return process.env.API_LIST_URL || 'https://n8n.srv1224751.hstgr.cloud/webhook/db-polleria';
+}
+
+function getListMethod() {
+  return process.env.API_LIST_METHOD || 'POST';
+}
+
 function pickArray(json) {
   if (Array.isArray(json)) return json;
-  return json.data || json.items || json.phones || json.telefonos || [];
+  return json.data || json.items || json.rows || json.records || json.phones || json.telefonos || json.body || [];
 }
 
 function firstValue(item, keys) {
@@ -32,9 +40,9 @@ function firstValue(item, keys) {
 }
 
 function normalizePhoneItem(item) {
-  const phone = String(firstValue(item, ['phone', 'telefono', 'number', 'numero', 'whatsapp'])).trim();
+  const phone = String(firstValue(item, ['phone', 'telefono', 'telefono_cliente', 'celular', 'number', 'numero', 'whatsapp'])).trim();
   const name = String(firstValue(item, ['name', 'nombre', 'customer', 'cliente'])).trim();
-  const aiValue = firstValue(item, ['aiEnabled', 'iaActiva', 'botEnabled', 'botActivo', 'enabled', 'active', 'activo']);
+  const aiValue = firstValue(item, ['aiEnabled', 'iaActiva', 'ia_activa', 'botEnabled', 'botActivo', 'bot_activo', 'enabled', 'active', 'activo']);
 
   return {
     phone,
@@ -46,6 +54,8 @@ function normalizePhoneItem(item) {
 
 module.exports = {
   getApiHeaders,
+  getListMethod,
+  getListUrl,
   normalizePhoneItem,
   pickArray,
   readJson
