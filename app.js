@@ -89,7 +89,7 @@ function renderPhones() {
     renderDetails(row.querySelector('.phone-details'), item);
     const button = row.querySelector('.deactivate-btn');
     button.disabled = !item.aiEnabled;
-    button.addEventListener('click', () => setAi(item.phone, false));
+    button.addEventListener('click', () => setAi(item, false));
     phonesList.appendChild(row);
   }
 }
@@ -123,13 +123,22 @@ function formatLabel(key) {
     .trim();
 }
 
-async function setAi(phone, aiEnabled) {
+async function setAi(target, aiEnabled) {
+  const phone = typeof target === 'object' ? target.phone : String(target);
+  const raw = typeof target === 'object' ? (target.raw || {}) : {};
+
   setStatus(`${aiEnabled ? 'Activando' : 'Desactivando'} IA para ${phone}...`);
 
   try {
     await api('/api/toggle-ai', {
       method: 'POST',
-      body: JSON.stringify({ phone, aiEnabled })
+      body: JSON.stringify({
+        phone,
+        telefono: raw.telefono || phone,
+        lead_id: raw.lead_id,
+        aiEnabled,
+        bot_desactivado: !aiEnabled
+      })
     });
     const existing = state.phones.find((item) => item.phone === phone);
     if (existing) {

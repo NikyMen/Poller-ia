@@ -50,9 +50,14 @@ con un body `{ "clientes": [...] }`. Si configuraste `CLIENTES_BOT_API_KEY`, env
 ```json
 {
   "phone": "3430000000",
-  "aiEnabled": false
+  "telefono": "3430000000",
+  "lead_id": 123,
+  "aiEnabled": false,
+  "bot_desactivado": true
 }
 ```
+
+Si `API_TOGGLE_URL` devuelve 404, revisar que el workflow de n8n este activo y que la variable use la URL de produccion `/webhook/...`, no `/webhook-test/...`.
 
 ## Desarrollo local
 

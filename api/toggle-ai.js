@@ -14,15 +14,22 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { phone, aiEnabled } = await readJson(req);
-    if (!phone) return sendJson(res, 400, { error: 'Falta telefono' });
+    const body = await readJson(req);
+    const { phone, telefono, lead_id, aiEnabled } = body;
+    const normalizedPhone = String(phone || telefono || '').trim();
+    const enabled = Boolean(aiEnabled);
+
+    if (!normalizedPhone) return sendJson(res, 400, { error: 'Falta telefono' });
 
     const response = await fetch(url, {
       method: 'POST',
       headers: getApiHeaders(),
       body: JSON.stringify({
-        phone: String(phone).trim(),
-        aiEnabled: Boolean(aiEnabled)
+        phone: normalizedPhone,
+        telefono: normalizedPhone,
+        lead_id,
+        aiEnabled: enabled,
+        bot_desactivado: !enabled
       })
     });
 
@@ -30,7 +37,12 @@ module.exports = async function handler(req, res) {
     const detail = text ? safeJson(text) : null;
 
     if (!response.ok) {
-      return sendJson(res, response.status, { error: 'No se pudo actualizar la IA', detail });
+      return sendJson(res, response.status, {
+        error: response.status === 404
+          ? 'No se encontro el webhook de desactivar IA en n8n'
+          : 'No se pudo actualizar la IA',
+        detail
+      });
     }
 
     return sendJson(res, 200, { ok: true, detail });
