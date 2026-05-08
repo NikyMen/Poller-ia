@@ -62,9 +62,9 @@ async function loadPhones() {
 function renderPhones() {
   const query = searchInput.value.trim().toLowerCase();
   const phones = state.phones.filter((item) => {
-    const rawText = JSON.stringify(item.raw || {}).toLowerCase();
     const formattedPhone = formatPhone(item.phone).toLowerCase();
-    return !query || item.phone.toLowerCase().includes(query) || formattedPhone.includes(query) || (item.name || '').toLowerCase().includes(query) || rawText.includes(query);
+    const leadText = formatLead(item).toLowerCase();
+    return !query || item.phone.toLowerCase().includes(query) || formattedPhone.includes(query) || leadText.includes(query);
   });
 
   phonesList.innerHTML = '';
@@ -75,19 +75,16 @@ function renderPhones() {
   }
 
   for (const item of phones) {
-    const row = document.createElement('article');
-    row.className = 'phone-row';
-    row.dataset.phone = item.phone;
-
     const statusClass = item.aiEnabled ? 'on' : 'off';
     const actionText = item.aiEnabled ? 'Desactivar IA' : 'IA desactivada';
+    const row = document.createElement('article');
+    row.className = `phone-row ${statusClass}`;
+    row.dataset.phone = item.phone;
 
     row.innerHTML = `
       <div class="phone-main">
         <p class="phone-number">${icons.phone}<span class="phone-value"></span></p>
         <p class="phone-lead">${icons.lead}<span class="lead-value"></span></p>
-        <p class="phone-name"></p>
-        <dl class="phone-details"></dl>
       </div>
       <div class="phone-status">
         <span class="badge ${statusClass}">${item.aiEnabled ? 'IA activa' : 'IA pausada'}</span>
@@ -99,35 +96,10 @@ function renderPhones() {
 
     row.querySelector('.phone-value').textContent = formatPhone(item.phone);
     row.querySelector('.lead-value').textContent = formatLead(item);
-    row.querySelector('.phone-name').textContent = item.name || 'Sin nombre';
-    renderDetails(row.querySelector('.phone-details'), item);
     const button = row.querySelector('.deactivate-btn');
     button.disabled = !item.aiEnabled;
     button.addEventListener('click', () => setAi(item, false));
     phonesList.appendChild(row);
-  }
-}
-
-function renderDetails(container, item) {
-  const skipKeys = new Set([
-    'phone', 'telefono', 'number', 'numero', 'whatsapp',
-    'lead_id', 'leadId', 'lead',
-    'name', 'nombre', 'customer', 'cliente',
-    'aiEnabled', 'iaActiva', 'botEnabled', 'botActivo',
-    'enabled', 'active', 'activo', 'raw'
-  ]);
-
-  const entries = Object.entries(item.raw || {})
-    .filter(([key, value]) => !skipKeys.has(key) && value !== null && value !== undefined && value !== '')
-    .slice(0, 8);
-
-  container.innerHTML = '';
-  for (const [key, value] of entries) {
-    const term = document.createElement('dt');
-    const description = document.createElement('dd');
-    term.textContent = formatLabel(key);
-    description.textContent = typeof value === 'object' ? JSON.stringify(value) : String(value);
-    container.append(term, description);
   }
 }
 
@@ -172,13 +144,6 @@ function getLeadValue(item) {
     ?? raw.raw?.lead_id
     ?? raw.raw?.leadId
     ?? raw.raw?.lead;
-}
-
-function formatLabel(key) {
-  return key
-    .replace(/[_-]+/g, ' ')
-    .replace(/([a-z])([A-Z])/g, '$1 $2')
-    .trim();
 }
 
 async function setAi(target, aiEnabled) {
