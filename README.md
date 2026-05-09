@@ -13,6 +13,7 @@ SESSION_SECRET=un-secreto-largo-aleatorio
 API_LIST_URL=https://tu-api.com/telefonos
 API_LIST_METHOD=POST
 API_TOGGLE_URL=https://tu-api.com/telefonos/ia
+API_ACTIVAR_BOT_URL=https://n8n.srv1224751.hstgr.cloud/webhook/Activar_telefono_polleria
 API_APAGAR_BOT_URL=https://n8n.srv1224751.hstgr.cloud/webhook/apagar_bot
 API_TOKEN=token-opcional-si-tu-api-lo-pide
 CLIENTES_BOT_API_KEY=token-opcional-para-api-clientes-bot
@@ -57,6 +58,8 @@ con un body `{ "clientes": [...] }`. Si configuraste `CLIENTES_BOT_API_KEY`, env
   "bot_desactivado": true
 }
 ```
+
+Cuando se reactiva un telefono, el panel llama a `API_ACTIVAR_BOT_URL` con el mismo formato y `aiEnabled: true`, `bot_desactivado: false`.
 
 Si `API_TOGGLE_URL` devuelve 404, revisar que el workflow de n8n este activo y que la variable use la URL de produccion `/webhook/...`, no `/webhook-test/...`.
 

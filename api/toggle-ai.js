@@ -8,18 +8,17 @@ module.exports = async function handler(req, res) {
 
   if (!requireSession(req, res)) return;
 
-  const url = process.env.API_TOGGLE_URL;
-  if (!url) {
-    return sendJson(res, 500, { error: 'Falta API_TOGGLE_URL' });
-  }
-
   try {
     const body = await readJson(req);
     const { phone, telefono, lead_id, aiEnabled } = body;
     const normalizedPhone = String(phone || telefono || '').trim();
     const enabled = Boolean(aiEnabled);
+    const url = enabled
+      ? (process.env.API_ACTIVAR_BOT_URL || 'https://n8n.srv1224751.hstgr.cloud/webhook/Activar_telefono_polleria')
+      : process.env.API_TOGGLE_URL;
 
     if (!normalizedPhone) return sendJson(res, 400, { error: 'Falta telefono' });
+    if (!url) return sendJson(res, 500, { error: 'Falta API_TOGGLE_URL' });
 
     const response = await fetch(url, {
       method: 'POST',
@@ -39,7 +38,7 @@ module.exports = async function handler(req, res) {
     if (!response.ok) {
       return sendJson(res, response.status, {
         error: response.status === 404
-          ? 'No se encontro el webhook de desactivar IA en n8n'
+          ? `No se encontro el webhook de ${enabled ? 'activar' : 'desactivar'} IA en n8n`
           : 'No se pudo actualizar la IA',
         detail
       });

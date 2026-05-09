@@ -76,7 +76,7 @@ function renderPhones() {
 
   for (const item of phones) {
     const statusClass = item.aiEnabled ? 'on' : 'off';
-    const actionText = item.aiEnabled ? 'Desactivar IA' : 'IA desactivada';
+    const actionText = item.aiEnabled ? 'Desactivar IA' : 'Activar bot';
     const row = document.createElement('article');
     row.className = `phone-row ${statusClass}`;
     row.dataset.phone = item.phone;
@@ -90,15 +90,14 @@ function renderPhones() {
         <span class="badge ${statusClass}">${item.aiEnabled ? 'IA activa' : 'IA pausada'}</span>
       </div>
       <div class="phone-actions">
-        <button class="deactivate-btn" type="button">${actionText}</button>
+        <button class="${item.aiEnabled ? 'deactivate-btn' : 'activate-btn'}" type="button">${actionText}</button>
       </div>
     `;
 
     row.querySelector('.phone-value').textContent = formatPhone(item.phone);
     row.querySelector('.lead-value').textContent = formatLead(item);
-    const button = row.querySelector('.deactivate-btn');
-    button.disabled = !item.aiEnabled;
-    button.addEventListener('click', () => setAi(item, false));
+    const button = row.querySelector('button');
+    button.addEventListener('click', () => setAi(item, !item.aiEnabled));
     phonesList.appendChild(row);
   }
 }
@@ -166,6 +165,7 @@ async function setAi(target, aiEnabled) {
     const existing = state.phones.find((item) => item.phone === phone);
     if (existing) {
       existing.aiEnabled = aiEnabled;
+      existing.raw = { ...(existing.raw || {}), bot_desactivado: !aiEnabled };
     } else {
       state.phones.unshift({ phone, name: 'Agregado manualmente', aiEnabled });
     }
