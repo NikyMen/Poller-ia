@@ -13,12 +13,14 @@ module.exports = async function handler(req, res) {
     const { phone, telefono, lead_id, aiEnabled } = body;
     const normalizedPhone = String(phone || telefono || '').trim();
     const enabled = Boolean(aiEnabled);
-    const url = enabled
-      ? (process.env.API_ACTIVAR_BOT_URL || 'https://n8n.srv1224751.hstgr.cloud/webhook/Activar_telefono_polleria')
-      : process.env.API_TOGGLE_URL;
+    const url = enabled ? process.env.API_ACTIVAR_BOT_URL : process.env.API_TOGGLE_URL;
 
     if (!normalizedPhone) return sendJson(res, 400, { error: 'Falta telefono' });
-    if (!url) return sendJson(res, 500, { error: 'Falta API_TOGGLE_URL' });
+    if (!url) {
+      return sendJson(res, 500, {
+        error: enabled ? 'Falta API_ACTIVAR_BOT_URL' : 'Falta API_TOGGLE_URL'
+      });
+    }
 
     const response = await fetch(url, {
       method: 'POST',
